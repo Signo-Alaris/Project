@@ -33,13 +33,12 @@ import org.json.JSONObject;
 import static android.R.attr.data;
 import static android.R.attr.name;
 import static android.R.attr.password;
-import static com.evanmorgan.stocktrader.R.id.showOutput;
 import static java.lang.System.in;
 
 
 public class MainActivity extends Activity {
 
-    private ProgressDialog progress; //Displays "loading" screen when waiting for response
+    private ProgressDialog progress; //Displays "logging in..." screen when waiting for response
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,22 +60,21 @@ public class MainActivity extends Activity {
 
         protected void onPreExecute() {
             progress = new ProgressDialog(this.context);
-            progress.setMessage("Loading");
+            progress.setMessage("Logging In...");
             progress.show();
         }
 
-        //Opens the connection to the website, POSTs parameters and outputs reponse
+        //Opens the connection to the website, POSTs parameters and outputs response
         @Override
         protected Void doInBackground(String... params) {
             try {
-
-                final TextView outputView = (TextView) findViewById(showOutput);
                 URL url = new URL("https://api-fxpractice.oanda.com/v3/accounts"); //Creates URL object with address to Oanda API
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //Open connection to website
                 //Enter the parameters for the JSON object to be sent
                 String urlParameters = "";
-                connection.setRequestMethod("GET"); //Sets the sending method
+                String requestType = "GET";
+                connection.setRequestMethod(requestType); //Sets the sending method
                 connection.setRequestProperty("USER-AGENT", "Mozilla/5.0"); //Sets the user-agent to mozilla
                 connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5"); //Sets the language
                 connection.setRequestProperty("Authorization","Bearer 5cac2883c147658ab1a41ddcf8357abb-9ad47a0f1ea244832de75d41f925db98");
@@ -97,7 +95,7 @@ public class MainActivity extends Activity {
                 else
                     inputStream = connection.getInputStream();
 
-                //Output data to screen
+                //Output data to terminal
                 System.out.println("\nSending 'POST' request to URL : " + url);
                 System.out.println("Post parameters : " + urlParameters);
                 System.out.println("Response Code : " + responseCode);
@@ -106,7 +104,7 @@ public class MainActivity extends Activity {
                 final StringBuilder output = new StringBuilder("Request URL " + url);
                 output.append(System.getProperty("line.separator") + "Request Parameters " + urlParameters);
                 output.append(System.getProperty("line.separator") + "Response Code " + responseCode);
-                output.append(System.getProperty("line.separator") + "Type " + "POST");
+                output.append(System.getProperty("line.separator") + "Type " + requestType);
 
                 //Create a buffer for the response from the website, read by getInputStream
                 BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -118,33 +116,24 @@ public class MainActivity extends Activity {
                 }
                 br.close();
 
-                //Pass output to command terminal
+                //Pass output to screen
                 output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
 
+                //Read in Account Number from response output
                 int count = 0;
                 Scanner scanner = new Scanner(responseOutput.toString());
                 scanner.useDelimiter("\"");
                 while (scanner.hasNext())
                 {
-                    count = count + 1;
-                    if(count==1) {
+                    if(count==5) {
                         String accountNo = (String) scanner.next();
-                        System.out.println(accountNo);
+                        System.out.println("Account: " + accountNo);
                         break;
                     }
+                    count = count + 1;
+                    scanner.next();
                 }
                 scanner.close();
-
-                //Replace "Response..." with the actual response
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        outputView.setText(output);
-                        progress.dismiss();
-                    }
-                }
-                );
 
             //Catch block for catching exceptions
             } catch (MalformedURLException e) {

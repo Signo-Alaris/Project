@@ -44,17 +44,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //Reload any previously saved instances
         setContentView(R.layout.activity_main); //Sets content view to the layout xml file
+        new Login(this).execute(); //When the app loads, create a login object
     }
 
-    public void sendPostRequest(View View) {
-        new PostClass(this).execute();
-    }
-
-    private class PostClass extends AsyncTask<String, Void, Void> {
+    private class Login extends AsyncTask<String, Void, Void> {
 
         private final Context context;
 
-        public PostClass(Context c) {
+        public Login(Context c) {
             this.context = c;
         }
 
@@ -126,8 +123,18 @@ public class MainActivity extends Activity {
                 while (scanner.hasNext())
                 {
                     if(count==5) {
-                        String accountNo = (String) scanner.next();
+                        final String accountNo = (String) scanner.next();
                         System.out.println("Account: " + accountNo);
+                        MainActivity.this.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run() {
+                                    TextView textView = (TextView) findViewById(R.id.accountField);
+                                    textView.setText(accountNo);
+                                    progress.dismiss();
+                                }
+                            }
+                        );
                         break;
                     }
                     count = count + 1;
@@ -137,10 +144,8 @@ public class MainActivity extends Activity {
 
             //Catch block for catching exceptions
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return null;

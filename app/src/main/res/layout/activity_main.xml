@@ -12,18 +12,17 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/SCROLLER_ID"
         android:scrollbars="vertical"
         android:fillViewport="true">
-
+        android:id="@+id/scroller"
     </ScrollView>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send POST Request"
-        android:id="@+id/sendPost"
-        android:onClick="sendPostRequest"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft = "true"
+        android:id = "@+id/accountField"
+        />
+
 </RelativeLayout>

@@ -22,14 +22,14 @@ public class SharesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shares);
 
+        startPropTimer();
+
         ImageButton buttonShares = (ImageButton) findViewById(R.id.imageButtonHome);
         buttonShares.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switchToHome(v);
             }
         });
-
-        startPropTimer();
     }
 
     private Runnable pingThread = new Runnable() {
@@ -90,6 +90,7 @@ public class SharesActivity extends AppCompatActivity {
     }
 
     private void switchToHome(View view) {
+        stopPropTimer();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

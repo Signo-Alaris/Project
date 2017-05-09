@@ -223,13 +223,13 @@ public class MainActivity extends Activity {
 
         protected void onPostExecute(String result) {
             MainActivity.this.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run() {
-                        TextView textView = (TextView) findViewById(R.id.balanceField);
-                        textView.setText("€" + balance);
-                    }
-                }
+                                            {
+                                                @Override
+                                                public void run() {
+                                                    TextView textView = (TextView) findViewById(R.id.balanceField);
+                                                    textView.setText("€" + balance);
+                                                }
+                                            }
             );
         }
     }
@@ -241,10 +241,10 @@ public class MainActivity extends Activity {
         public List<Float> history = new ArrayList<Float>();
 
         private Instrument(String name, float ask, float bid){
-             String instrumentName = name;
-             float askPrice = ask;
-             float bidPrice = bid;
-             history.add(askPrice);
+            String instrumentName = name;
+            float askPrice = ask;
+            float bidPrice = bid;
+            history.add(askPrice);
         }
     }
 
